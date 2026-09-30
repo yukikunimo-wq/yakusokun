@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>予定入力</title>
+
+<style>
+  * {
+    box-sizing: border-box;
+  }
+
+  html, body {
+    margin: 0;
+    width: 100%;
+    min-height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+      "Hiragino Kaku Gothic ProN", "Yu Gothic", Meiryo, sans-serif;
+    background: #dce5ef;
+  }
+
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    overflow-x: hidden;
+  }
+
+  .phone {
+    position: relative;
+    width: 528px;
+    height: 699px;
+    overflow: hidden;
+    background:
+      radial-gradient(
+        circle at 50% 75%,
+        rgba(255,255,255,.95),
+        rgba(220,229,239,.85) 58%,
+        #d4dde8 100%
+      );
+
+    /* 文字を黒に変更 */
+    color: #000;
+  }
+
+  /* すべての文字を黒にする */
+  .phone * {
+    color: #000;
+  }
+
+  /* iPhone-like top area */
+  .status {
+    height: 59px;
+    position: relative;
+    font-weight: 700;
+  }
+
+  .time {
+    position: absolute;
+    left: 70px;
+    top: 13px;
+    font-size: 23px;
+    letter-spacing: -.5px;
+  }
+
+  .dynamic-island {
+    position: absolute;
+    top: 3px;
+    left: 181px;
+    width: 166px;
+    height: 32px;
+    border-radius: 20px;
+    background: #000;
+  }
+
+  .status-icons {
+    position: absolute;
+    right: 43px;
+    top: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .signal {
+    width: 27px;
+    height: 15px;
+    display: flex;
+    align-items: end;
+    gap: 3px;
+  }
+
+  .signal i {
+    display: block;
+    width: 4px;
+    background: #000;
+    border-radius: 2px;
+  }
+
+  .signal i:nth-child(1) {
+    height: 5px;
+    opacity: .35;
+  }
+
+  .signal i:nth-child(2) {
+    height: 8px;
+    opacity: .5;
+  }
+
+  .signal i:nth-child(3) {
+    height: 11px;
+    opacity: .7;
+  }
+
+  .signal i:nth-child(4) {
+    height: 14px;
+    opacity: .9;
+  }
+
+  .wifi {
+    width: 25px;
+    height: 17px;
+    position: relative;
+  }
+
+  .wifi::before,
+  .wifi::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 3px solid #000;
+    border-left-color: transparent;
+    border-right-color: transparent;
+    border-bottom-color: transparent;
+    border-radius: 50%;
+  }
+
+  .wifi::before {
+    width: 22px;
+    height: 15px;
+    top: 0;
+  }
+
+  .wifi::after {
+    width: 10px;
+    height: 7px;
+    top: 7px;
+  }
+
+  .battery {
+    width: 32px;
+    height: 15px;
+    border: 2px solid #000;
+    border-radius: 4px;
+    position: relative;
+  }
+
+  .battery::after {
+    content: "";
+    position: absolute;
+    right: -5px;
+    top: 3px;
+    width: 3px;
+    height: 7px;
+    border-radius: 0 2px 2px 0;
+    background: #000;
+  }
+
+  .battery span {
+    display: block;
+    width: 23px;
+    height: 9px;
+    margin: 1px;
+    border-radius: 2px;
+    background: #000;
+  }
+
+  .sheet {
+    position: absolute;
+    left: 2px;
+    right: 2px;
+    top: 59px;
+    bottom: 0;
+    border-radius: 22px 22px 0 0;
+    background: rgba(250,250,252,.97);
+    box-shadow: 0 -1px 10px rgba(0,0,0,.04);
+  }
+
+  .grabber {
+    width: 44px;
+    height: 5px;
+    border-radius: 4px;
+    background: #b9b9bd;
+    margin: 8px auto 7px;
+  }
+
+  .nav {
+    height: 63px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+  }
+
+  .back {
+    position: absolute;
+    left: 35px;
+    top: 19px;
+    font-size: 25px;
+    font-weight: 700;
+    color: #000;
+  }
+
+  .back .arrow {
+    color: #000;
+    font-size: 39px;
+    font-weight: 300;
+    vertical-align: -3px;
+    margin-right: 1px;
+  }
+
+  .title {
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: .5px;
+    color: #000;
+  }
+
+  .form-card {
+    margin: 0 20px;
+    height: 411px;
+    border-radius: 22px;
+    background: rgba(239,239,244,.92);
+    box-shadow: 0 7px 19px rgba(60,70,90,.12);
+    padding: 19px 19px 18px;
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 94px minmax(0, 1fr);
+    align-items: center;
+    margin-bottom: 10px;
+    column-gap: 4px;
+  }
+
+  .label {
+    font-size: 22px;
+    font-weight: 800;
+    white-space: nowrap;
+    letter-spacing: .2px;
+    color: #000;
+  }
+
+  .field {
+    height: 50px;
+    border: 2px solid #c4c4c9;
+    border-radius: 15px;
+    background: rgba(255,255,255,.33);
+    display: flex;
+    align-items: center;
+    padding: 0 17px;
+    font-size: 22px;
+    font-weight: 600;
+    min-width: 0;
+    overflow: hidden;
+    color: #000;
+  }
+
+  .date-field {
+    justify-content: space-between;
+  }
+
+  .calendar {
+    width: 22px;
+    height: 20px;
+    border: 2px solid #8e8e93;
+    border-radius: 4px;
+    position: relative;
+    opacity: .75;
+  }
+
+  .calendar::before {
+    content: "";
+    position: absolute;
+    left: 3px;
+    right: 3px;
+    top: 5px;
+    height: 2px;
+    background: #8e8e93;
+    box-shadow: 0 5px 0 rgba(142,142,147,.7);
+  }
+
+  .calendar::after {
+    content: "";
+    position: absolute;
+    left: 4px;
+    top: -4px;
+    width: 2px;
+    height: 7px;
+    background: #8e8e93;
+    box-shadow: 8px 0 0 #8e8e93;
+  }
+
+  .title-input {
+    border-color: #1782d9;
+    box-shadow: 0 0 0 1px rgba(23,130,217,.2);
+    font-size: 23px;
+    justify-content: flex-start;
+    gap: 3px;
+    padding-left: 18px;
+    padding-right: 18px;
+    color: #000;
+  }
+
+  .caret {
+    width: 2px;
+    height: 29px;
+    background: #187fcf;
+    display: inline-block;
+    margin-left: 2px;
+  }
+
+  .select-field {
+    justify-content: space-between;
+    background: linear-gradient(#e3e3e8,#d7d7dc);
+    border: 0;
+    height: 50px;
+    padding-right: 14px;
+  }
+
+  .category {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+
+  .orange-dot {
+    width: 31px;
+    height: 31px;
+    border-radius: 50%;
+    background: #ff8b1d;
+    box-shadow: inset 0 -1px 2px rgba(0,0,0,.12);
+  }
+
+  .chevrons {
+    color: #000;
+    font-size: 21px;
+    line-height: 12px;
+    text-align: center;
+    width: 16px;
+  }
+
+  .chevrons::before {
+    content: "⌃";
+    display: block;
+  }
+
+  .chevrons::after {
+    content: "⌄";
+    display: block;
+    margin-top: -4px;
+  }
+
+  .time-row {
+    align-items: end;
+    margin-top: 1px;
+  }
+
+  .time-fields {
+    display: flex;
+    align-items: flex-start;
+    gap: 11px;
+    min-width: 0;
+  }
+
+  .time-wrap {
+    position: relative;
+    flex: 1;
+    padding-top: 18px;
+  }
+
+  .time-caption {
+    position: absolute;
+    top: 0;
+    left: 15px;
+    background: transparent;
+    padding: 0;
+    font-size: 16px;
+    line-height: 18px;
+    font-weight: 700;
+    z-index: 2;
+    white-space: nowrap;
+    color: #000;
+  }
+
+  .time-field {
+    height: 49px;
+    justify-content: space-between;
+    font-size: 20px;
+    padding: 0 13px 0 16px;
+    overflow: hidden;
+  }
+
+  .field span {
+    white-space: nowrap;
+  }
+
+  .dash {
+    font-size: 24px;
+    color: #000;
+    margin-top: 1px;
+  }
+
+  .content-row {
+    margin-top: 13px;
+    align-items: start;
+  }
+
+  .content-field {
+    height: 51px;
+  }
+
+  .alarm-row {
+    margin-top: 4px;
+  }
+
+  .alarm-field {
+    background: linear-gradient(#e3e3e8,#d7d7dc);
+    border: 0;
+    height: 50px;
+    justify-content: space-between;
+    font-size: 21px;
+    padding-left: 17px;
+    padding-right: 14px;
+  }
+
+  .register {
+    position: absolute;
+    left: 21px;
+    right: 21px;
+    bottom: 21px;
+    height: 69px;
+    border-radius: 36px;
+    border: 0;
+    background: linear-gradient(#1584e9,#0877df);
+    color: #fff;
+    font-size: 26px;
+    font-weight: 800;
+    box-shadow: 0 5px 10px rgba(0,100,220,.18);
+  }
+
+  /* 「登録」ボタンだけ白文字 */
+  .phone .register {
+    color: #fff;
+  }
+
+  @media (max-width: 560px) {
+    .phone {
+      width: 100vw;
+      height: 100vh;
+      min-height: 699px;
+    }
+
+    .time {
+      left: 13.3vw;
+    }
+
+    .dynamic-island {
+      left: 34.3vw;
+    }
+
+    .status-icons {
+      right: 8vw;
+    }
+
+    .sheet {
+      left: 0;
+      right: 0;
+    }
+
+    .form-card {
+      margin-left: 4vw;
+      margin-right: 4vw;
+    }
+
+    .register {
+      left: 4vw;
+      right: 4vw;
+    }
+  }
+</style>
+</head>
+
+<body>
+
+<main class="phone">
+
+  <section class="sheet">
+
+    <div class="grabber"></div>
+
+    <div class="nav">
+      <div class="back">
+        <span class="arrow">‹</span>戻る
+      </div>
+
+      <div class="title">予定入力</div>
+    </div>
+
+    <div class="form-card">
+
+      <div class="row">
+        <div class="label">日付:</div>
+
+        <div class="field date-field">
+          <span>2026/08/15</span>
+          <span class="calendar"></span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="label">タイトル:</div>
+
+        <div class="field title-input">
+          <span>ランチ（田中さん）</span>
+          <span class="caret"></span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="label">カテゴリー:</div>
+
+        <div class="field select-field">
+          <div class="category">
+            <span class="orange-dot"></span>
+            <span>食費</span>
+          </div>
+
+          <span class="chevrons"></span>
+        </div>
+      </div>
+
+      <div class="row time-row">
+        <div class="label">時間設定:</div>
+
+        <div class="time-fields">
+
+          <div class="time-wrap">
+            <div class="time-caption">開始時間</div>
+
+            <div class="field time-field">
+              <span>12:00</span>
+              <span class="chevrons"></span>
+            </div>
+          </div>
+
+          <div class="dash">-</div>
+
+          <div class="time-wrap">
+            <div class="time-caption">終了時間</div>
+
+            <div class="field time-field">
+              <span>13:00</span>
+              <span class="chevrons"></span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="row content-row">
+        <div class="label">内容:</div>
+
+        <div class="field content-field"></div>
+      </div>
+
+      <div class="row alarm-row">
+        <div class="label">アラーム:</div>
+
+        <div class="field alarm-field">
+          <span>1時間前</span>
+          <span class="chevrons"></span>
+        </div>
+      </div>
+
+    </div>
+
+    <button class="register">登録</button>
+
+  </section>
+
+</main>
+
+</body>
+</html>

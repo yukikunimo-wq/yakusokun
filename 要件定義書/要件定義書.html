@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>「やくそくん」プロジェクト要件定義書</title>
+    <style>
+        :root {
+            --primary-color: #1a365d;
+            --secondary-color: #2d3748;
+            --accent-color: #3182ce;
+            --bg-color: #f7fafc;
+            --text-color: #2d3748;
+            --border-color: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+            line-height: 1.7;
+            color: var(--text-color);
+            background-color: var(--bg-color);
+            padding: 0;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 2.5rem 1rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: 280px minmax(0, 1fr);
+            gap: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+            nav {
+                position: static !important;
+            }
+        }
+
+        nav {
+            position: sticky;
+            top: 2rem;
+            height: fit-content;
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        nav h2 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 0.3rem;
+        }
+
+        nav ul {
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-bottom: 0.8rem;
+        }
+
+        nav ul li a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-size: 0.95rem;
+            transition: color 0.2s;
+        }
+
+        nav ul li a:hover {
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        main {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            max-width: 100%;
+        }
+
+        section {
+            margin-bottom: 4rem;
+            scroll-margin-top: 2rem;
+        }
+
+        section:last-child {
+            margin-bottom: 0;
+        }
+
+        h2 {
+            font-size: 1.6rem;
+            color: var(--primary-color);
+            border-left: 6px solid var(--accent-color);
+            padding-left: 0.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        h3 {
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+            margin: 1.8rem 0 0.8rem 0;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.3rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        ul, ol {
+            margin-left: 1.8rem;
+            margin-bottom: 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.6rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            border: 1px solid var(--border-color);
+            padding: 0.8rem;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f7fafc;
+            color: var(--primary-color);
+            width: 30%;
+        }
+
+        .tag {
+            display: inline-block;
+            background-color: #ebf8ff;
+            color: #2b6cb0;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-right: 0.3rem;
+        }
+
+        .img-container {
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+        }
+
+        iframe {
+            width: 100%;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-top: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2.5rem;
+            color: #718096;
+            font-size: 0.9rem;
+            border-top: 1px solid var(--border-color);
+            margin-top: 4rem;
+            background: #edf2f7;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>「やくそくん」プロジェクト要件定義書</h1>
+        <p>作成日: 2026年8月26日</p>
+    </header>
+
+    <div class="container">
+        <nav>
+            <h2>目次</h2>
+            <ul>
+                <li><a href="#overview">1. プロジェクト概要</a></li>
+                <li><a href="#sitemap">2. サイト構成 (サイトマップ)</a></li>
+                <li><a href="#functional">3. 機能要件</a></li>
+                <li><a href="#screens">4. 画面イメージ</a></li>
+            </ul>
+        </nav>
+
+        <main>
+            <section id="overview">
+                <h2>1. プロジェクト概要</h2>
+                <h3>【コンセプト】</h3>
+                <p>「予定（やくそく）」と「お金（出費）」と天気をひとつにまとめて、日々の暮らしをスマートにサポートするスケジュール管理アプリ。</p>
+                
+                <h3>【ターゲット】</h3>
+                <p>日常の予定と出費を管理したい個人ユーザー向け</p>
+
+                <h3>【開発言語・環境】</h3>
+                <ul>
+                    <li><strong>バックエンド（メインWebAPI）</strong>: Java (Spring Boot)</li>
+                    <li><strong>データベース</strong>: SQL (PostgreSQL または MySQL)</li>
+                    <li><strong>フロントエンド</strong>: HTML / CSS / JavaScript (Bootstrap, Chart.js)</li>
+                </ul>
+            </section>
+
+            <section id="sitemap">
+                <h2>2. サイト構成 (サイトマップ)</h2>
+                <p>本サイトは、以下の画面および機能で構成されます。</p>
+                <ul>
+                    <li>
+                        <strong>ログイン画面</strong>
+                        <ul>
+                            <li>ログイン機能</li>
+                            <li>新規登録機能</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>ホーム画面（カレンダー）</strong>
+                        <ul>
+                            <li>今日～1週間の簡易スケジュールおよび天気情報の表示</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>予定管理画面</strong>
+                        <ul>
+                            <li>予定の新規登録・編集</li>
+                            <li>予定お知らせアラーム機能</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>家計簿・収支管理画面</strong>
+                        <ul>
+                            <li>今月の収支入力・一覧画面（カレンダー形式）</li>
+                            <li>収支の分類管理画面</li>
+                            <li>月の出費額の管理・目標との比較分析（AIアドバイス）をテキスト形式で表示</li>
+                            <li><span class="tag">拡張予定</span> 出費の今月・直近比較 of 表示は、積み上げ式進捗バー（横棒グラフ）に拡張予定</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <section id="functional">
+                <h2>3. 機能要件</h2>
+                
+                <h3>3.1 スケジュール・予定管理機能</h3>
+                <ul>
+                    <li><strong>カレンダー表示</strong>: 月表示 / 日表示の切り替え。スケジュール内容ごとに色分け表示を行う。</li>
+                    <li><strong>日時選択</strong>: 「開始」・「終了」時間を15分単位で選択可能（ドラムロールボタン式）。タイトル内には開始時間のみ表示し、終了時間はタップ展開したメモ内に表示する。</li>
+                    <li>
+                        <strong>予定の入力方式</strong>: 開始時間とスケジュール内容を入力。タップ展開することで、終了時間と詳細なスケジュール内容が閲覧可能。
+                        <ul>
+                            <li><strong>プリセット選択</strong>: よく使う予定（「出勤」「買い物」「食事会」など）を事前に登録しておき、ワンタップで呼び出す機能。</li>
+                            <li><strong>自由入力</strong>: タイトル、メモを手入力可能（タイトルは5文字以内）。</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <strong>アラーム・通知機能</strong>:
+                        <ul>
+                            <li><strong>プリセット選択</strong>: 設定した時間（15分前・30分前・1時間前のみ）に通知を行う。</li>
+                            <li><strong>通知方法</strong>: 通知内容の画面表示 ＋ アラーム音。</li>
+                            <li><strong>稼働条件</strong>: サイトを開いている間は、指定時刻に画面表示（モーダル） ＋ アラーム音でお知らせする。</li>
+                            <li><span class="tag">拡張予定</span> プッシュ通知の送信機能への拡張を予定。</li>
+                        </ul>
+                    </li>
+                </ul>
+
+                <h3>3.2 天気連携機能（ログイン時のみ更新）</h3>
+                <ul>
+                    <li><strong>自動更新</strong>: バックグラウンド処理（定期実行）により、ユーザーがアプリを開かなくても天気情報を定期取得する（1週間分のみ）。<br><span class="tag">拡張予定</span> バックグラウンド自動更新への拡張を予定。</li>
+                    <li><strong>表示位置</strong>: 日付横スペースにそれぞれの天気アイコン・気温（最高/最低）・降水確率％を表示する。</li>
+                    <li><strong>利用サイト</strong>: <a href="https://open-meteo.com/" target="_blank">Open-Meteo (オープン・メテオ)</a> を無料枠内で使用する。</li>
+                </ul>
+
+                <h3>3.3 家計簿・収支管理機能（専用カレンダー。画面切り替え表示）</h3>
+                <ul>
+                    <li><strong>収支・予算設定</strong>: 月ごとの収入額および目標出費額を設定する。収入額は「＋」、出費額は「ー」で金額を表示する。</li>
+                    <li>
+                        <strong>出費入力・フィードバック</strong>:
+                        <ul>
+                            <li>支出の登録（今月の目標出費額設定、現状の出費額との比較）を行う。</li>
+                            <li>カテゴリ（固定費、食費、光熱費など）ごとの分類管理機能。</li>
+                            <li>出費額や傾向に応じて、キャラクターAI（やくそくん）からの一言コメントをテキスト形式で表示する。（例: 「今週は節約上手だね！」「ちょっと使っちゃったかな？」）</li>
+                        </ul>
+                    </li>
+                </ul>
+            </section>
+
+            <section id="screens">
+                <h2>4. 画面イメージ</h2>
+                <p>各画面の構成およびイメージです。枠内の画面を操作・確認いただけます。</p>
+                
+                <h3>4.1 ログイン画面</h3>
+                <iframe src="イメージ/ログイン画面.html" height="600px"></iframe>
+                
+                <h3>4.2 新規登録画面</h3>
+                <iframe src="イメージ/新規登録画面.html" height="800px"></iframe>
+                
+                <h3>4.3 ホーム画面（カレンダー）</h3>
+                <iframe src="イメージ/ホーム画面（カレンダー）.html" height="700px"></iframe>
+                
+                <h3>4.4 スケジュール管理画面</h3>
+                <iframe src="イメージ/スケジュール管理画面.html" height="700px"></iframe>
+                
+                <h3>4.5 予定アラーム画面</h3>
+                <iframe src="イメージ/予定アラーム画面.html" height="600px"></iframe>
+                
+                <h3>4.6 家計簿画面</h3>
+                <iframe src="イメージ/家計簿画面.html" height="700px"></iframe>
+                
+                <h3>4.7 収支目標設定画面</h3>
+                <iframe src="イメージ/収支目標設定画面.html" height="500px"></iframe>
+                
+                <h3>4.8 収支管理画面</h3>
+                <iframe src="イメージ/収支管理画面.html" height="600px"></iframe>
+                
+                <h3>4.9 収支詳細登録画面</h3>
+                <iframe src="イメージ/収支詳細登録画面.html" height="600px"></iframe>
+            </section>
+        </main>
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Project Requirements Document. All Rights Reserved.</p>
+    </footer>
+
+</body>
+</html>

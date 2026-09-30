@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>収支一覧</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    width: 100%;
+    min-height: 100%;
+    background: #fff;
+    font-family: -apple-system, BlinkMacSystemFont, "Noto Sans JP",
+                 "Yu Gothic", "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+    color: #222;
+  }
+
+  .screen {
+    width: 100%;
+    max-width: 520px;
+    min-height: 100vh;
+    margin: 0 auto;
+    background: #fff;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header {
+    height: 86px;
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 24px;
+  }
+
+  .back {
+    border: 0;
+    background: transparent;
+    padding: 0;
+    width: 24px;
+    height: 32px;
+    font-size: 35px;
+    line-height: 26px;
+    font-weight: 300;
+    color: #222;
+    cursor: pointer;
+  }
+
+  .date {
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: .02em;
+  }
+
+  .section-title {
+    margin: 9px 20px 18px;
+    font-size: 13px;
+    color: #555;
+  }
+
+  .entries {
+    padding: 0 39px 100px 77px;
+  }
+
+  .entry {
+    height: 72px;
+    margin-bottom: 9px;
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+    padding: 0 17px 0 55px;
+  }
+
+  .entry::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 7px;
+    background: rgba(0,0,0,.08);
+  }
+
+  .income { background: #9dc7ef; }
+  .dinner { background: #dca0d2; }
+  .daily { background: #b7cce2; }
+  .lunch { background: #e9a6aa; }
+
+  .icon {
+    position: absolute;
+    left: 13px;
+    width: 33px;
+    height: 33px;
+    display: grid;
+    place-items: center;
+    font-size: 27px;
+    line-height: 1;
+    filter: grayscale(.15);
+  }
+
+  .income .icon { color: #17639c; }
+  .dinner .icon, .lunch .icon { font-size: 29px; }
+  .daily .icon { color: #6d8eae; font-size: 25px; }
+
+  .info {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .name {
+    font-size: 20px;
+    line-height: 1.1;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  .tag {
+    align-self: flex-start;
+    padding: 2px 11px 3px;
+    border-radius: 12px;
+    font-size: 11px;
+    line-height: 1;
+    font-weight: 700;
+  }
+
+  .income .tag { background: #2584ca; color: #fff; }
+  .dinner .tag { background: #c878bd; color: #fff; }
+  .daily .tag { background: #91a9c0; color: #fff; }
+  .lunch .tag { background: #d9868c; color: #fff; }
+
+  .amount {
+    margin-left: auto;
+    padding-left: 8px;
+    font-size: 21px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .fab {
+    position: fixed;
+    right: max(28px, calc((100vw - 520px) / 2 + 28px));
+    bottom: 24px;
+    width: 58px;
+    height: 58px;
+    border: 0;
+    border-radius: 50%;
+    background: #3d82d2;
+    color: white;
+    font-size: 30px;
+    font-weight: 300;
+    line-height: 1;
+    box-shadow: 0 3px 7px rgba(0,0,0,.18);
+    cursor: pointer;
+  }
+
+  .fab:active { transform: scale(.96); }
+</style>
+</head>
+<body>
+  <main class="screen">
+    <header class="header">
+      <button class="back" aria-label="戻る">‹</button>
+      <div class="date">2026年 8月10日</div>
+    </header>
+
+    <div class="section-title">収支一覧</div>
+
+    <section class="entries">
+      <article class="entry income">
+        <div class="icon" aria-hidden="true">☝</div>
+        <div class="info">
+          <div class="name">副業</div>
+          <div class="tag">副業</div>
+        </div>
+        <div class="amount">¥30,000</div>
+      </article>
+
+      <article class="entry dinner">
+        <div class="icon" aria-hidden="true">🍴</div>
+        <div class="info">
+          <div class="name">夕食</div>
+          <div class="tag">交際費</div>
+        </div>
+        <div class="amount">-¥4,550</div>
+      </article>
+
+      <article class="entry daily">
+        <div class="icon" aria-hidden="true">🛒</div>
+        <div class="info">
+          <div class="name">日用品</div>
+          <div class="tag">日用品</div>
+        </div>
+        <div class="amount">-¥2,800</div>
+      </article>
+
+      <article class="entry lunch">
+        <div class="icon" aria-hidden="true">🍴</div>
+        <div class="info">
+          <div class="name">ランチ</div>
+          <div class="tag">食費</div>
+        </div>
+        <div class="amount">-¥1,200</div>
+      </article>
+    </section>
+
+    <button class="fab" aria-label="追加">+</button>
+  </main>
+</body>
+</html>

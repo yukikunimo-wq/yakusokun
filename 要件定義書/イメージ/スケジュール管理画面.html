@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>スケジュール詳細</title>
+
+<style>
+*{
+  box-sizing:border-box;
+}
+
+html,body{
+  margin:0;
+  padding:0;
+  background:#e9ebef;
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans JP","Hiragino Kaku Gothic ProN",Meiryo,sans-serif;
+  color:#111;
+}
+
+body{
+  display:flex;
+  justify-content:center;
+  min-height:100vh;
+}
+
+/* =========================
+   メイン画面
+   PCでは最大1200px
+   ========================= */
+.phone{
+  width:100%;
+  max-width:1200px;
+  min-height:100vh;
+  background:#f7f8fa;
+  padding:16px 40px 90px;
+  overflow:visible;
+}
+
+/* =========================
+   ステータスバー
+   ========================= */
+.status-bar{
+  height:30px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:0 5px;
+  font-size:15px;
+  font-weight:700;
+}
+
+.status-right{
+  display:flex;
+  gap:8px;
+  align-items:center;
+  font-size:13px;
+}
+
+.battery{
+  width:27px;
+  height:13px;
+  border:2px solid #111;
+  border-radius:4px;
+  position:relative;
+}
+
+.battery:after{
+  content:"";
+  position:absolute;
+  right:-4px;
+  top:3px;
+  width:2px;
+  height:5px;
+  background:#111;
+}
+
+.battery:before{
+  content:"";
+  position:absolute;
+  inset:2px;
+  background:#111;
+  border-radius:1px;
+}
+
+/* =========================
+   ヘッダー
+   ========================= */
+.header{
+  display:flex;
+  align-items:center;
+  gap:9px;
+  margin:8px 4px 20px;
+  font-size:21px;
+  font-weight:700;
+  white-space:nowrap;
+}
+
+.back{
+  font-size:25px;
+  font-weight:400;
+}
+
+/* =========================
+   天気
+   ========================= */
+.weather{
+  background:#fff;
+  border-radius:20px;
+  min-height:124px;
+  padding:17px 16px;
+
+  display:grid;
+  grid-template-columns:62px 1fr auto;
+  gap:9px;
+  align-items:center;
+
+  box-shadow:0 3px 12px rgba(0,0,0,.04);
+}
+
+.weather-icon{
+  font-size:43px;
+  text-align:center;
+}
+
+.temperature{
+  font-size:39px;
+  font-weight:700;
+  line-height:1;
+}
+
+.weather-label{
+  display:inline-block;
+  margin-top:8px;
+  padding:5px 24px;
+  background:#4388ed;
+  color:#fff;
+  border-radius:18px;
+  font-size:15px;
+}
+
+.weather-detail{
+  text-align:right;
+  font-size:14px;
+  line-height:1.9;
+  white-space:nowrap;
+}
+
+.high{
+  color:#d32f2f;
+  font-weight:700;
+}
+
+.low{
+  color:#1565c0;
+  font-weight:700;
+}
+
+.arrow{
+  color:#aaa;
+  font-size:25px;
+  vertical-align:middle;
+}
+
+/* =========================
+   セクションタイトル
+   ========================= */
+.section-title{
+  margin:28px 4px 10px;
+  font-size:20px;
+  font-weight:700;
+}
+
+/* =========================
+   スケジュール
+   ========================= */
+.schedule-row{
+  display:grid;
+  grid-template-columns:68px minmax(0,1fr);
+  gap:10px;
+  margin-bottom:10px;
+  align-items:center;
+}
+
+.time{
+  font-size:20px;
+  font-weight:700;
+  color:#555;
+}
+
+.time.red{
+  color:#bd2b2b;
+}
+
+/* =========================
+   スケジュールカード
+   ========================= */
+.card{
+  min-height:96px;
+  width:100%;
+  min-width:0;
+
+  border-radius:18px;
+  background:#fff;
+  border-left:7px solid #999;
+
+  padding:13px 11px 12px 12px;
+
+  display:grid;
+  grid-template-columns:43px minmax(0,1fr) auto;
+  gap:6px;
+  align-items:center;
+
+  box-shadow:0 2px 9px rgba(0,0,0,.035);
+}
+
+.card.work{
+  border-left-color:#21c56b;
+  background:#f0fbf4;
+}
+
+.card.play{
+  border-left-color:#287ff0;
+  background:#f0f6ff;
+}
+
+.card.beauty{
+  border-left-color:#ff99cc;
+  background:#fff1f4;
+}
+
+.card.shopping{
+  border-left-color:#50bce8;
+  background:#effaff;
+}
+
+.card.food{
+  border-left-color:#963de0;
+  background:#fbf3ff;
+}
+
+/* =========================
+   アイコン・内容
+   ========================= */
+.icon{
+  font-size:28px;
+  text-align:center;
+}
+
+.content{
+  min-width:0;
+  overflow:hidden;
+}
+
+.title{
+  font-size:17px;
+  font-weight:700;
+  margin-bottom:5px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+.detail{
+  font-size:13px;
+  color:#333;
+  margin-bottom:5px;
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+/* =========================
+   カテゴリー
+   ========================= */
+.category{
+  display:inline-block;
+  border-radius:14px;
+  padding:3px 11px;
+  font-size:12px;
+  font-weight:700;
+}
+
+.cat-work{
+  color:#18a857;
+  background:#d9f6e3;
+}
+
+.cat-play{
+  color:#ee8a00;
+  background:#ffe7bd;
+}
+
+.cat-beauty{
+  color:#e52b59;
+  background:#ffd8e3;
+}
+
+.cat-shopping{
+  color:#149ac9;
+  background:#d6f2fc;
+}
+
+.cat-food{
+  color:#8736b8;
+  background:#ead7f8;
+}
+
+/* =========================
+   操作部分
+   ========================= */
+.actions{
+  align-self:stretch;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  align-items:flex-end;
+  min-width:68px;
+}
+
+.dots{
+  font-size:21px;
+  font-weight:800;
+  line-height:1;
+}
+
+.switch{
+  width:68px;
+  height:31px;
+  border-radius:18px;
+  background:#d7d8dc;
+  color:#fff;
+  font-size:12px;
+  font-weight:700;
+
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+
+  padding-right:8px;
+  position:relative;
+  cursor:pointer;
+}
+
+.switch:before{
+  content:"";
+  width:25px;
+  height:25px;
+  background:#fff;
+  border-radius:50%;
+
+  position:absolute;
+  left:3px;
+  top:3px;
+
+  box-shadow:0 1px 3px rgba(0,0,0,.2);
+}
+
+.switch.on{
+  background:#1682ee;
+  justify-content:flex-start;
+  padding-left:8px;
+  padding-right:0;
+}
+
+.switch.on:before{
+  left:40px;
+}
+
+/* =========================
+   ＋ボタン
+   ========================= */
+.plus{
+  position:fixed;
+  right:max(20px,calc(50% - 550px));
+  bottom:18px;
+
+  width:58px;
+  height:58px;
+  border-radius:50%;
+
+  background:#1479ec;
+  color:#fff;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+
+  font-size:36px;
+  font-weight:300;
+
+  box-shadow:0 5px 16px rgba(20,121,236,.35);
+}
+
+
+/* =========================
+   タブレット
+   ========================= */
+@media(max-width:900px){
+
+  .phone{
+    padding-left:25px;
+    padding-right:25px;
+  }
+}
+
+
+/* =========================
+   スマートフォン
+   ========================= */
+@media(max-width:600px){
+
+  body{
+    background:#f7f8fa;
+  }
+
+  .phone{
+    width:100%;
+    max-width:430px;
+
+    /* 上下の余白も縮小 */
+    padding:8px 12px 70px;
+  }
+
+  /* =========================
+     ステータスバー
+     ========================= */
+  .status-bar{
+    height:22px;
+    padding:0 3px;
+    font-size:12px;
+  }
+
+  .status-right{
+    gap:4px;
+    font-size:10px;
+  }
+
+  .battery{
+    width:21px;
+    height:10px;
+  }
+
+  .battery:after{
+    right:-3px;
+    top:2px;
+    height:4px;
+  }
+
+  /* =========================
+     ヘッダー
+     ========================= */
+  .header{
+    gap:5px;
+    margin:5px 2px 10px;
+    font-size:15px;
+
+    white-space:nowrap;
+    overflow:hidden;
+  }
+
+  .back{
+    font-size:19px;
+    flex-shrink:0;
+  }
+
+  /* =========================
+     天気
+     ========================= */
+  .weather{
+    min-height:86px;
+    padding:9px 10px;
+
+    grid-template-columns:40px minmax(0,1fr) auto;
+    gap:4px;
+
+    border-radius:14px;
+  }
+
+  .weather-icon{
+    font-size:29px;
+  }
+
+  .temperature{
+    font-size:26px;
+  }
+
+  .weather-label{
+    margin-top:3px;
+    padding:3px 11px;
+    font-size:10px;
+  }
+
+  .weather-detail{
+    font-size:9px;
+    line-height:1.5;
+  }
+
+  .arrow{
+    font-size:17px;
+  }
+
+  /* =========================
+     スケジュールタイトル
+     ========================= */
+  .section-title{
+    margin:14px 2px 6px;
+    font-size:16px;
+  }
+
+  /* =========================
+     スケジュール
+     ========================= */
+  .schedule-row{
+    grid-template-columns:48px minmax(0,1fr);
+    gap:5px;
+
+    /* スケジュール間の余白を小さく */
+    margin-bottom:5px;
+  }
+
+  .time{
+    font-size:13px;
+  }
+
+  /* =========================
+     カード
+     ========================= */
+  .card{
+    min-height:64px;
+
+    border-left-width:4px;
+    border-radius:11px;
+
+    /* 縦の余白を縮小 */
+    padding:6px 6px;
+
+    grid-template-columns:27px minmax(0,1fr) auto;
+    gap:3px;
+  }
+
+  .icon{
+    font-size:18px;
+  }
+
+  .title{
+    font-size:12px;
+    margin-bottom:2px;
+    line-height:1.25;
+  }
+
+  .detail{
+    font-size:9px;
+    margin-bottom:2px;
+    line-height:1.2;
+  }
+
+  /* =========================
+     カテゴリー
+     ========================= */
+  .category{
+    padding:1px 6px;
+    font-size:8px;
+    line-height:1.3;
+  }
+
+  /* =========================
+     ON / OFF
+     ========================= */
+  .actions{
+    min-width:46px;
+  }
+
+  .dots{
+    font-size:13px;
+    line-height:1;
+  }
+
+  .switch{
+    width:46px;
+    height:21px;
+    font-size:8px;
+    padding-right:5px;
+  }
+
+  .switch:before{
+    width:15px;
+    height:15px;
+    left:3px;
+    top:3px;
+  }
+
+  .switch.on{
+    padding-left:5px;
+  }
+
+  .switch.on:before{
+    left:28px;
+  }
+
+  /* =========================
+     ＋ボタン
+     ========================= */
+  .plus{
+    right:15px;
+    bottom:12px;
+
+    width:48px;
+    height:48px;
+
+    font-size:27px;
+  }
+}
+
+
+/* =========================
+   小型スマートフォン
+   ========================= */
+@media(max-width:360px){
+
+  .phone{
+    padding-left:7px;
+    padding-right:7px;
+    padding-bottom:65px;
+  }
+
+  /* =========================
+     ヘッダー
+     ========================= */
+  .header{
+    font-size:13px;
+    margin-bottom:8px;
+  }
+
+  .back{
+    font-size:17px;
+  }
+
+  /* =========================
+     天気
+     ========================= */
+  .weather{
+    min-height:78px;
+    padding:7px 8px;
+
+    grid-template-columns:36px minmax(0,1fr) auto;
+    gap:3px;
+  }
+
+  .weather-icon{
+    font-size:25px;
+  }
+
+  .temperature{
+    font-size:23px;
+  }
+
+  .weather-label{
+    padding:2px 9px;
+    font-size:9px;
+  }
+
+  .weather-detail{
+    font-size:8px;
+    line-height:1.4;
+  }
+
+  .arrow{
+    font-size:15px;
+  }
+
+  /* =========================
+     スケジュールタイトル
+     ========================= */
+  .section-title{
+    margin:11px 2px 5px;
+    font-size:15px;
+  }
+
+  /* =========================
+     スケジュール
+     ========================= */
+  .schedule-row{
+    grid-template-columns:44px minmax(0,1fr);
+    gap:4px;
+    margin-bottom:4px;
+  }
+
+  .time{
+    font-size:12px;
+  }
+
+  /* =========================
+     カード
+     ========================= */
+  .card{
+    min-height:58px;
+
+    padding:5px 5px;
+
+    border-left-width:4px;
+    border-radius:10px;
+
+    grid-template-columns:25px minmax(0,1fr) auto;
+    gap:2px;
+  }
+
+  .icon{
+    font-size:16px;
+  }
+
+  .title{
+    font-size:11px;
+    line-height:1.15;
+    margin-bottom:1px;
+  }
+
+  .detail{
+    font-size:8px;
+    line-height:1.1;
+    margin-bottom:1px;
+  }
+
+  /* =========================
+     カテゴリー
+     ========================= */
+  .category{
+    padding:1px 5px;
+    font-size:7px;
+  }
+
+  /* =========================
+     ON / OFF
+     ========================= */
+  .actions{
+    min-width:43px;
+  }
+
+  .dots{
+    font-size:12px;
+  }
+
+  .switch{
+    width:43px;
+    height:19px;
+    font-size:7px;
+    padding-right:4px;
+  }
+
+  .switch:before{
+    width:13px;
+    height:13px;
+    left:3px;
+    top:3px;
+  }
+
+  .switch.on{
+    padding-left:4px;
+  }
+
+  .switch.on:before{
+    left:27px;
+  }
+
+  /* =========================
+     ＋ボタン
+     ========================= */
+  .plus{
+    right:11px;
+    bottom:10px;
+
+    width:44px;
+    height:44px;
+
+    font-size:25px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<main class="phone">
+
+  <!-- =========================
+       ステータスバー
+       ========================= -->
+  
+  <!-- =========================
+       ヘッダー
+       ========================= -->
+  <header class="header">
+    <span class="back">&lt;</span>
+    <span>戻る</span>
+    <span>2026年 8月10日 (月)</span>
+  </header>
+
+
+  <!-- =========================
+       天気
+       ========================= -->
+  <section class="weather">
+
+    <div class="weather-icon">
+      ☔
+    </div>
+
+    <div>
+      <div class="temperature">
+        23°C
+      </div>
+
+      <span class="weather-label">
+        天気
+      </span>
+    </div>
+
+    <div class="weather-detail">
+      最高 <span class="high">26°C</span> /
+      最低 <span class="low">20°C</span>
+      <br>
+      降水確率 80%
+      <span class="arrow">›</span>
+    </div>
+
+  </section>
+
+
+  <!-- =========================
+       スケジュール
+       ========================= -->
+  <h2 class="section-title">
+    スケジュール
+  </h2>
+
+
+  <!-- =========================
+       08:00
+       ========================= -->
+  <div class="schedule-row">
+
+    <div class="time">
+      08:00
+    </div>
+
+    <article class="card">
+
+      <div class="icon">
+        ⏱️
+      </div>
+
+      <div class="content">
+
+        <div class="title">
+          ストレッチ・朝の準備
+        </div>
+
+        <div class="detail">
+          ◷　08:00 - 08:30
+        </div>
+
+      </div>
+
+      <div class="actions">
+
+        <div class="dots">
+          •••
+        </div>
+
+        <div class="switch">
+          OFF
+        </div>
+
+      </div>
+
+    </article>
+
+  </div>
+
+
+  <!-- =========================
+       10:30
+       ========================= -->
+  <div class="schedule-row">
+
+    <div class="time">
+      10:30
+    </div>
+
+    <article class="card work">
+
+      <div class="icon">
+        🤝
+      </div>
+
+      <div class="content">
+
+        <div class="title">
+          会議
+        </div>
+
+        <div class="detail">
+          ◷　10:30 - 11:30
+        </div>
+
+        <span class="category cat-work">
+          仕事
+        </span>
+
+      </div>
+
+      <div class="actions">
+
+        <div class="dots">
+          •••
+        </div>
+
+        <div class="switch">
+          OFF
+        </div>
+
+      </div>
+
+    </article>
+
+  </div>
+
+
+  <!-- =========================
+       12:00
+       ========================= -->
+  <div class="schedule-row">
+
+    <div class="time">
+      12:00
+    </div>
+
+    <article class="card play">
+
+      <div class="icon">
+        🍴
+      </div>
+
+      <div class="content">
+
+        <div class="title">
+          ランチ（田中さんと）
+        </div>
+
+        <div class="detail">
+          ◷　12:00 - 13:00
+        </div>
+
+        <span class="category cat-play">
+          遊び
+        </span>
+
+      </div>
+
+      <div class="actions">
+
+        <div class="dots">
+          •••
+        </div>
+
+        <div class="switch">
+          OFF
+        </div>
+
+      </div>
+
+    </article>
+
+  </div>
+
+
+  <!-- =========================
+       15:00
+       ========================= -->
+  <div class="schedule-row">
+
+    <div class="time red">
+      15:00
+    </div>
+
+    <article class="card beauty">
+
+      <div class="icon">
+        💇
+      </div>
+
+      <div class="content">
+
+        <div class="title">
+          美容院
+        </div>
+
+        <div class="detail">
+          ◷　15:00 - 16:30
+        </div>
+
+        <span class="category cat-beauty">
+          美容
+        </span>
+
+      </div>
+
+      <div class="actions">
+
+        <div class="dots">
+          •••
+        </div>
+
+        <div class="switch on">
+          ON
+        </div>
+
+      </div>
+
+    </article>
+
+  </div>
+
+
+  <!-- =========================
+       17:00
+       ========================= -->
+  <div class="schedule-row">
+
+    <div class="time">
+      17:00
+    </div>
+
+    <article class="card shopping">
+
+      <div class="icon">
+        🛒
+      </div>
+
+      <div class="content">
+
+        <div class="title">
+          買い物
+        </div>
+
+        <div class="detail">
+          ◷　17:00 - 18:00
+        </div>
+
+        <span class="category cat-shopping">
+          買い物
+        </span>
+
+      </div>
+
+      <div class="actions">
+
+        <div class="dots">
+          •••
+        </div>
+
+        <div class="switch">
+          OFF
+        </div>
+
+      </div>
+
+    </article>
+
+  </div>
+
+
+  <!-- =========================
+       19:00
+       ========================= -->
+  <div class="schedule-row">
+
+    <div class="time red">
+      19:00
+    </div>
+
+    <article class="card food">
+
+      <div class="icon">
+        🍽️
+      </div>
+
+      <div class="content">
+
+        <div class="title">
+          飲食
+        </div>
+
+        <div class="detail">
+          ◷　19:00 - 21:00
+        </div>
+
+        <span class="category cat-food">
+          飲食
+        </span>
+
+      </div>
+
+      <div class="actions">
+
+        <div class="dots">
+          •••
+        </div>
+
+        <div class="switch">
+          OFF
+        </div>
+
+      </div>
+
+    </article>
+
+  </div>
+
+
+  <!-- =========================
+       21:00
+       ========================= -->
+  <div class="schedule-row">
+
+    <div class="time">
+      21:00
+    </div>
+
+    <article class="card">
+
+      <div class="icon">
+        📖
+      </div>
+
+      <div class="content">
+
+        <div class="title">
+          読書・リラックスタイム
+        </div>
+
+        <div class="detail">
+          ◷　21:00 - 22:00
+        </div>
+
+      </div>
+
+      <div class="actions">
+
+        <div class="dots">
+          •••
+        </div>
+
+        <div class="switch">
+          OFF
+        </div>
+
+      </div>
+
+    </article>
+
+  </div>
+
+
+  <!-- =========================
+       ＋ボタン
+       ========================= -->
+  <div class="plus">
+    ＋
+  </div>
+
+</main>
+
+
+<script>
+document.querySelectorAll('.switch').forEach(sw => {
+
+  sw.addEventListener('click', () => {
+
+    sw.classList.toggle('on');
+
+    sw.textContent =
+      sw.classList.contains('on')
+        ? 'ON'
+        : 'OFF';
+
+  });
+
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>収支詳細登録</title>
+<style>
+*{box-sizing:border-box}
+html,body{
+  margin:0;
+  width:100%;
+  min-height:100%;
+  background:#fff;
+  color:#111;
+  font-family:-apple-system,BlinkMacSystemFont,"Helvetica Neue",
+    "Hiragino Kaku Gothic ProN","Yu Gothic",Arial,sans-serif;
+}
+body{
+  min-height:100vh;
+}
+
+/* スマホ外枠を完全に削除 */
+.app{
+  width:100%;
+  max-width:430px;
+  min-height:100vh;
+  margin:0 auto;
+  background:#fff;
+}
+
+/* 上部 */
+.status{
+  height:48px;
+  position:relative;
+  background:linear-gradient(#eeeeee,#f5f5f5);
+}
+.time{
+  position:absolute;
+  left:27px;
+  top:10px;
+  font-size:16px;
+  font-weight:700;
+}
+.island{
+  position:absolute;
+  left:50%;
+  top:0;
+  transform:translateX(-50%);
+  width:115px;
+  height:28px;
+  background:#050505;
+  border-radius:0 0 17px 17px;
+}
+.status-icons{
+  position:absolute;
+  right:19px;
+  top:10px;
+  display:flex;
+  gap:7px;
+  align-items:center;
+}
+.signal{
+  width:15px;height:11px;position:relative;
+}
+.signal i{
+  position:absolute;
+  bottom:0;
+  width:3px;
+  background:#111;
+  border-radius:1px;
+}
+.signal i:nth-child(1){height:4px;left:0}
+.signal i:nth-child(2){height:6px;left:4px}
+.signal i:nth-child(3){height:8px;left:8px}
+.signal i:nth-child(4){height:10px;left:12px}
+.wifi{
+  width:16px;height:11px;position:relative;
+}
+.wifi:before{
+  content:"";
+  position:absolute;
+  inset:0;
+  border:2px solid #111;
+  border-bottom:0;
+  border-left-color:transparent;
+  border-right-color:transparent;
+  border-radius:50%;
+}
+.wifi:after{
+  content:"";
+  position:absolute;
+  width:4px;height:4px;
+  background:#111;
+  border-radius:50%;
+  left:6px;bottom:-1px;
+}
+.battery{
+  width:22px;height:11px;
+  border:1.5px solid #111;
+  border-radius:3px;
+  position:relative;
+}
+.battery:before{
+  content:"";
+  position:absolute;
+  left:2px;top:1.5px;
+  width:15px;height:6px;
+  background:#111;
+  border-radius:1px;
+}
+.battery:after{
+  content:"";
+  position:absolute;
+  right:-4px;top:2px;
+  width:2px;height:5px;
+  background:#111;
+  border-radius:0 1px 1px 0;
+}
+
+/* ナビゲーション */
+.nav{
+  height:57px;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#fff;
+  border-bottom:1px solid #ececef;
+}
+.grabber{
+  position:absolute;
+  top:4px;
+  left:50%;
+  transform:translateX(-50%);
+  width:34px;height:4px;
+  border-radius:4px;
+  background:#c9c9cc;
+}
+.back{
+  position:absolute;
+  left:20px;
+  top:16px;
+  color:#55779e;
+  font-size:17px;
+  font-weight:500;
+}
+.back:before{
+  content:"";
+  display:inline-block;
+  width:11px;height:11px;
+  border-left:2px solid #55779e;
+  border-bottom:2px solid #55779e;
+  transform:rotate(45deg);
+  margin-right:5px;
+}
+.title{
+  font-size:19px;
+  font-weight:700;
+}
+
+/* 本体 */
+.main{
+  padding:16px 19px 0;
+}
+.card{
+  width:100%;
+  padding:10px 12px 13px;
+  border:1px solid #d2d2d5;
+  border-radius:13px;
+  background:linear-gradient(#fafafa,#f2f2f4);
+  box-shadow:0 2px 4px rgba(0,0,0,.14);
+}
+.row{
+  height:45px;
+  display:grid;
+  grid-template-columns:65px 1fr;
+  align-items:center;
+}
+.label{
+  font-size:15px;
+  font-weight:700;
+  white-space:nowrap;
+}
+.field{
+  height:37px;
+  position:relative;
+  display:flex;
+  align-items:center;
+  padding:0 10px;
+  border:1px solid #c7c7cc;
+  border-radius:10px;
+  background:rgba(255,255,255,.68);
+  box-shadow:inset 0 1px 2px rgba(0,0,0,.04);
+  font-size:17px;
+}
+.select{
+  background:#dedee3;
+  border-color:#dedee3;
+  padding-right:30px;
+}
+.select:after{
+  content:"⌃";
+  position:absolute;
+  right:9px;
+  top:8px;
+  color:#777;
+  font-size:13px;
+  transform:rotate(180deg);
+}
+.date{
+  padding-right:32px;
+}
+.calendar{
+  position:absolute;
+  right:11px;
+  width:14px;height:14px;
+  border:1.5px solid #888;
+  border-radius:3px;
+}
+.calendar:before{
+  content:"";
+  position:absolute;
+  left:-1px;top:3px;
+  width:14px;height:1px;
+  background:#888;
+}
+.category-icon{
+  width:24px;height:24px;
+  flex:none;
+  margin-right:8px;
+  border-radius:6px;
+  background:#f2a6b5;
+}
+.amount{
+  font-variant-numeric:tabular-nums;
+}
+.button{
+  width:100%;
+  height:39px;
+  margin-top:9px;
+  border:0;
+  border-radius:11px;
+  background:#d5d5db;
+  font-size:16px;
+  font-weight:700;
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <header class="nav">
+    <div class="grabber"></div>
+    <div class="back">戻る</div>
+    <div class="title">収支詳細登録</div>
+  </header>
+
+  <main class="main">
+    <section class="card">
+
+      <div class="row">
+        <div class="label">日付:</div>
+        <div class="field date">
+          2026/08/15
+          <span class="calendar"></span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="label">タイプ:</div>
+        <div class="field select">出費</div>
+      </div>
+
+      <div class="row">
+        <div class="label">カテゴリー:</div>
+        <div class="field select">
+          <span class="category-icon"></span>
+          <span>食費</span>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="label">金額:</div>
+        <div class="field amount">¥1,200</div>
+      </div>
+
+      <div class="row">
+        <div class="label">メモ:</div>
+        <div class="field">ランチ</div>
+      </div>
+
+      <button class="button">登録</button>
+
+    </section>
+  </main>
+</div>
+</body>
+</html>
